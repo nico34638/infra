@@ -6,4 +6,5 @@ namespace: argocd
 resources:
   - cert-manager.yml
   - cluster-apps.yml
+  - argocd.yml
 
