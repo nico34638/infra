@@ -32,5 +32,5 @@ spec:
                   name: https
   tls:
     - hosts:
-        - argocd.minikube
+        - argocd.minikube.nuco-dev.fr
       secretName: argocd-tls
