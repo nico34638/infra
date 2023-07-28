@@ -1,0 +1,42 @@
+# yamllint disable rule:line-length
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres-operator
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: postgres-operator
+  project: default
+  source:
+    repoURL: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+    chart: postgres-operator
+    targetRevision: 1.10.0
+    helm:
+      values: |
+        configGeneral:
+          workers: 1
+
+          enable_lazy_spilo_upgrade: false
+          enable_shm_volume: true
+
+        configKubernetes:
+          enable_pod_antiaffinity: true
+
+          enable_cross_namespace_secret: true
+          secret_name_template: "{username}.{cluster}.credentials"
+
+          delete_annotation_date_key: "delete-date"
+          delete_annotation_name_key: "delete-clustername"
+
+          additional_pod_capabilities:
+            - "SYS_NICE"
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
