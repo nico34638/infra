@@ -1,0 +1,42 @@
+# yamllint disable rule:line-length
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres-operator-ui
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: postgres-operator
+  project: default
+  source:
+    repoURL: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+    chart: postgres-operator-ui
+    targetRevision: 1.10.0
+    helm:
+      values: |
+        ingress:
+          enabled: true 
+          ingressClassName: nginx 
+          hosts:
+            - host: postgres-operator-ui.nuco-dev.fr
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: postgres-operator-ui
+                    port:
+                      name: http
+          tls:
+            - hosts:
+                - postgres-operator-ui.nuco-dev.fr
+              secretName: postgres-operator-ui-tls
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
