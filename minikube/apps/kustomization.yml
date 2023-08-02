@@ -8,4 +8,5 @@ resources:
   - cluster-apps.yml
   - argocd.yml
   - postgres-operator.yml
+  - minio.yml
 
