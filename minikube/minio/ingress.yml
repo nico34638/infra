@@ -12,7 +12,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: minio.nuco-dev.fr
+    - host: s3.nuco-dev.fr
       http:
         paths:
           - path: /
@@ -21,8 +21,22 @@ spec:
               service:
                 name: minio-service
                 port:
-                  number: 9001
+                  name: http
+    - host: console.s3.nuco-dev.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-service
+                port:
+                  name: console
   tls:
     - hosts:
-        - minio.nuco-dev.fr
+        - s3.nuco-dev.fr
       secretName: minio-tls
+    - hosts:
+        - console.s3.nuco-dev.fr
+      secretName: minio-console-tls
+
