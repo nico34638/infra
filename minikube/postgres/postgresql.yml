@@ -1,0 +1,32 @@
+---
+kind: "postgresql"
+apiVersion: "acid.zalan.do/v1"
+
+metadata:
+  name: "nico"
+  namespace: "postgres"
+  labels:
+    team: acid
+
+spec:
+  teamId: "acid"
+  postgresql:
+    version: "14"
+  numberOfInstances: 1
+  volume:
+    size: "10Gi"
+    storageClass: "standard"
+  users:
+    nico: []
+  databases:
+    nico: nico
+  allowedSourceRanges:
+    # IP ranges to access your cluster go here
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
