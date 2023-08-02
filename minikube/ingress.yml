@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: postgres-operator-ui
+  namespace: postgres-operator 
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: postgres-operator-ui.nuco-dev.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: postgres-operator-ui
+                port:
+                  name: https
+  tls:
+    - hosts:
+        - postgres-operator-ui.nuco-dev.fr
+      secretName: postgres-operator-ui-tls
