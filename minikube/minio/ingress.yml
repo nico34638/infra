@@ -20,7 +20,7 @@ spec:
               service:
                 name: minio-service
                 port:
-                  number: 32278
+                  number: 9001
   tls:
     - hosts:
         - minio.nuco-dev.fr

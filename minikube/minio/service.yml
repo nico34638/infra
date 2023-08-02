@@ -8,8 +8,10 @@ spec:
   ports:
     - name: http
       port: 9000
-      targetPort: 9000
-      protocol: TCP
+      targetPort: http
+    - name: console
+      port: 9001
+      targetPort: console
   selector:
     # Looks for labels `app:minio` in the namespace and applies the spec
     app: minio
