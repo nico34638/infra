@@ -9,4 +9,4 @@ resources:
   - argocd.yml
   - postgres-operator.yml
   - minio.yml
-
+  - prometheus-stack.yml

@@ -1,0 +1,36 @@
+# yamllint disable rule:line-length
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
+    strategy.spinnaker.io/replace: 'true'
+spec:
+  destination:
+    name: in-cluster
+    namespace: monitoring
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 42.0.3
+    helm:
+      values: |-
+        prometheus-node-exporter:
+           hostRootFsMount:
+             enabled: false
+        prometheusOperator:
+           admissionWebhooks:
+             failurePolicy: Ignore
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      # Fix for argocd > 2.5
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
