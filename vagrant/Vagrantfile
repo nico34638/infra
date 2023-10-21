@@ -1,0 +1,59 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "debian/buster64"
+
+  ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_ed25519.pub").first.strip
+  etcHosts = ""
+
+  # Define nodes caracteristic
+  NODES = [
+      { :hostname => "autohaprox", :ip => "192.168.56.10", :cpus => 1, :mem => 512, :type => "haproxy" },
+      { :hostname => "autokmaster", :ip => "192.168.56.11", :cpus => 4, :mem => 4096, :type => "kub" },
+      { :hostname => "autoknode1", :ip => "192.168.56.12", :cpus => 2, :mem => 2048, :type => "kub" },
+      { :hostname => "autoknode2", :ip => "192.168.56.13", :cpus => 2, :mem => 2048, :type => "kub" },
+      { :hostname => "autodep", :ip => "192.168.56.20", :cpus => 1, :mem => 512, :type => "deploy" }
+  ]
+
+  NODES.each do |node|
+     if node[:type] != "haproxy"
+        etcHosts += "echo '" + node[:ip] + "   " + node[:hostname] + "' >> /etc/hosts" + "\n"
+     else
+        etcHosts += "echo '" + node[:ip] + "   " + node[:hostname] + " autoelb.kub ' >> /etc/hosts" + "\n"
+     end
+   end #end NODES
+
+         # run installation
+  NODES.each do |node|
+     config.vm.define node[:hostname] do |cfg|
+       cfg.vm.hostname = node[:hostname]
+       cfg.vm.network "private_network", ip: node[:ip]
+       cfg.vm.provision 'shell', inline: 'mkdir -p /root/.ssh'
+       cfg.vm.provision 'shell', inline: "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
+       cfg.vm.provision 'shell', inline: "echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys", privileged: false
+       cfg.vm.provider "virtualbox" do |v|
+         v.customize [ "modifyvm", :id, "--cpus", node[:cpus] ]
+         v.customize [ "modifyvm", :id, "--memory", node[:mem] ]
+         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+         v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+         v.customize ["modifyvm", :id, "--name", node[:hostname] ]
+      end #end provider
+
+      cfg.vm.provision :shell, :inline => etcHosts
+
+     end # end config
+  end # end nodes
+
+
+end
