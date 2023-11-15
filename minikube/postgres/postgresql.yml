@@ -1,32 +1,20 @@
 ---
 kind: "postgresql"
 apiVersion: "acid.zalan.do/v1"
-
 metadata:
-  name: "nico"
-  namespace: "postgres"
-  labels:
-    team: nico
-
+  name: nico-main-cluster
 spec:
-  teamId: "nico"
+  teamId: nico
   postgresql:
     version: "14"
-  numberOfInstances: 2
   volume:
-    size: "10Gi"
-    storageClass: "local-path"
+    size: 10Gi
+    storageClass: local-path
+  numberOfInstances: 1
   users:
-    nico: []
+    nico.nico: []
     keycloak.keycloak: []
   databases:
-    nico: nico
+    nico: nico.nico
     keycloak: keycloak.keycloak
-  
-  resources:
-    requests:
-      cpu: 100m
-      memory: 100Mi
-    limits:
-      cpu: 500m
-      memory: 500Mi
+
