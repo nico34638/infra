@@ -6,22 +6,22 @@ metadata:
   name: "nico"
   namespace: "postgres"
   labels:
-    team: acid
+    team: nico
 
 spec:
-  teamId: "acid"
+  teamId: "nico"
   postgresql:
     version: "14"
-  numberOfInstances: 1
+  numberOfInstances: 2
   volume:
     size: "10Gi"
     storageClass: "standard"
   users:
     nico: []
+    keycloak.keycloak: []
   databases:
     nico: nico
-  allowedSourceRanges:
-    # IP ranges to access your cluster go here
+    keycloak: keycloak.keycloak
   
   resources:
     requests:

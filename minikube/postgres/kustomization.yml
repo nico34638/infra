@@ -1,6 +1,6 @@
 ---
 kind: Kustomization
-namespace: default
-
+namespace: postgres
 resources:
+  - namespace.yml
   - postgresql.yml
