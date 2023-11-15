@@ -15,7 +15,7 @@ spec:
   numberOfInstances: 2
   volume:
     size: "10Gi"
-    storageClass: "standard"
+    storageClass: "local-path"
   users:
     nico: []
     keycloak.keycloak: []
