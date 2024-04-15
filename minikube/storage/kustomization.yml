@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: local-path-storage
 
 resources:
+  - namespace.yaml
   - auth.yaml
   - config-map.yaml
   - deployment.yaml
-  - namespace.yaml
   - storage-class.yaml
