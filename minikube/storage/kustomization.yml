@@ -1,0 +1,10 @@
+---
+kind: Kustomization
+namespace: local-path-storage
+
+resources:
+  - auth.yaml
+  - config-map.yaml
+  - deployment.yaml
+  - namespace.yaml
+  - storage-class.yaml
